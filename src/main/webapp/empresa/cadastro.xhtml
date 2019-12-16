@@ -1,0 +1,37 @@
+<ui:composition template="/WEB-INF/template/layout.xhtml" xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui" xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+    <ui:define name="titulo">Empresa / Cadastro</ui:define>
+    <ui:define name="corpo">
+    	<f:metadata>
+			<o:viewParam name="empresa" value="#{cadastroEmpresaBean.empresa}" />
+			<f:viewAction action="#{cadastroEmpresaBean.inicializar}" />
+		</f:metadata>
+		<div class="ui-g-12">
+	    	<h:form>
+		    	<p:messages closable="true">
+		    		<p:autoUpdate />
+		    	</p:messages>
+		    	<div class="card">
+		    		<h2>Cadastro</h2>
+			    	<div class="formulario">
+			    		<div class="campo">
+					        <p:outputLabel value="Razão social:" for="razaoSocial"/>
+				    		<p:inputText id="razaoSocial" value="#{cadastroEmpresaBean.empresa.razaoSocial}" class="ui-size-7" />
+			    		</div>
+			    		<div class="campo">
+				    		<p:outputLabel value="Nome fantasia" for="nomeFantasia"/>
+				    		<p:inputText id="nomeFantasia" value="#{cadastroEmpresaBean.empresa.nomeFantasia}" class="ui-size-7" />
+			    		</div>
+			    		<div class="campo">
+				    		<p:outputLabel value="CNPJ:" for="cnpj"/>
+				    		<p:inputMask id="cnpj" mask="99.999.999/9999-99" value="#{cadastroEmpresaBean.empresa.cnpj}" maxlength="18" class="ui-size-4" />
+			    		</div>
+		    		</div>
+		    		<div class="botoes">
+			    		<p:commandButton value="Salvar" action="#{cadastroEmpresaBean.salvar}" update="@form" />
+			    		<p:button value="Voltar" outcome="/empresa/pesquisa" />
+		    		</div>
+		    	</div>
+	    	</h:form>
+    	</div>
+    </ui:define>
+</ui:composition>

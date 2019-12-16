@@ -1,0 +1,126 @@
+<ui:composition template="/WEB-INF/template/layout.xhtml" xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui" xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+    <ui:define name="titulo">Usuário / Cadastro</ui:define>
+    <ui:define name="corpo">
+    	<f:metadata>
+			<o:viewParam name="usuario" value="#{cadastroUsuarioBean.pessoa}" converter="usuarioConverter" />
+			<f:viewAction action="#{cadastroUsuarioBean.inicializar}" />
+		</f:metadata>
+		<div class="ui-g-12">
+	    	<h:form>
+		    	<p:messages closable="true">
+		    		<p:autoUpdate />
+		    	</p:messages>
+		    	<div class="card">
+		    		<h2>Cadastro</h2>
+		    		<div class="painel">
+		    			<p:fieldset legend="Dados gerais" class="perfil formulario">
+			    			<div class="campo">
+					    		<p:outputLabel value="Foto:" />
+					    		<p:outputPanel id="foto">
+					   				<o:graphicImage value="#{cadastroUsuarioBean.pessoa.foto}" dataURI="true" rendered="#{not empty cadastroUsuarioBean.pessoa.foto}" /><br />
+					    			<p:commandButton id="remover-foto" value="Remover" action="#{cadastroUsuarioBean.pessoa.removerFoto}" process="@this" update="foto" rendered="#{not empty cadastroUsuarioBean.pessoa.foto}" />
+					   				<p:fileUpload fileUploadListener="#{cadastroUsuarioBean.pessoa.adicionarFoto}" mode="advanced" dragDropSupport="true" sizeLimit="5242880" allowTypes="/(\.|\/)(jpe?g|png)$/" auto="true" showButtons="false" invalidFileMessage="São permitidas somente imagens (jpeg, jpg e png)" invalidSizeMessage="O tamanho máximo permitido é de 5MB." rendered="#{empty cadastroUsuarioBean.pessoa.foto}" label="Adicionar" update="foto" />
+					    		</p:outputPanel>
+				    		</div>
+				    		<div class="painel">
+					    		<div class="campo">
+						    		<p:outputLabel value="Tipo de pessoa:" for="tipo"/>
+						    		<p:selectOneMenu id="tipo" value="#{cadastroUsuarioBean.pessoa.tipo}" required="true" requiredMessage="Tipo de pessoa deve ser informado">
+							            <f:selectItem itemLabel="SELECIONE" />
+							            <f:selectItems value="#{cadastroUsuarioBean.tipos}" var="tipo" itemValue="#{tipo}" itemLabel="#{tipo.descricao}" />
+							        </p:selectOneMenu>
+						        </div>
+						        <div class="campo">
+					    			<p:outputLabel value="Nome:" for="nome" />
+						    		<p:inputText id="nome" value="#{cadastroUsuarioBean.pessoa.nome}" class="ui-size-7" />
+					    		</div>
+					    		<div class="campo">
+						    		<p:outputLabel value="CPF:" for="cpf" />
+						    		<p:inputMask id="cpf" value="#{cadastroUsuarioBean.pessoa.cpf}" mask="999.999.999-99" class="ui-size-3" />
+					    		</div>
+				    		</div>
+			    		</p:fieldset>
+			    		<p:fieldset legend="Contatos" class="formulario">
+				    		<div class="campo">
+					    		<p:outputLabel value="Telefone:" for="telefone"/>
+				    		 	<p:inputMask id="telefone" value="#{cadastroUsuarioBean.pessoa.contato.telefone}" mask="(99) 99999-999?9" class="ui-size-3" />
+			    		 	</div>
+			    		 	<div class="campo">
+					    		<p:outputLabel value="E-mail:" for="email"/>
+					    		<p:inputText id="email" value="#{cadastroUsuarioBean.pessoa.contato.email}" class="ui-size-7" />
+				    		</div>
+			    		</p:fieldset>
+			    		<p:fieldset legend="Localização" class="formulario">
+				    		<div class="campo">
+					    		<p:outputLabel value="Pais:" for="pais"/>
+					    		<p:selectOneMenu id="pais" value="#{cadastroUsuarioBean.pessoa.endereco.bairro.municipio.estado.pais}" required="true" requiredMessage="País deve ser informado">
+						            <f:selectItem itemLabel="SELECIONE" />
+						            <f:selectItems value="#{cadastroUsuarioBean.listaPaises}" var="pais" itemValue="#{pais}" itemLabel="#{pais.nome}" />
+						            <p:ajax listener="#{cadastroUsuarioBean.carregarEstados(cadastroUsuarioBean.pessoa.endereco.bairro.municipio.estado.pais)}" update="estado" />
+						        </p:selectOneMenu>
+					        </div>
+					        <div class="campo">
+						        <p:outputLabel value="Estado:" for="estado"/>
+					    		<p:selectOneMenu id="estado" value="#{cadastroUsuarioBean.pessoa.endereco.bairro.municipio.estado}" required="true" requiredMessage="Estado deve ser informado">
+						            <f:selectItem itemLabel="SELECIONE" />
+						            <f:selectItems value="#{cadastroUsuarioBean.listaEstados}" var="estado" itemValue="#{estado}" itemLabel="#{estado.nome}" />
+						            <p:ajax listener="#{cadastroUsuarioBean.carregarMunicipios(cadastroUsuarioBean.pessoa.endereco.bairro.municipio.estado)}" update="municipio" />
+						        </p:selectOneMenu>
+					        </div>
+					        <div class="campo">
+						        <p:outputLabel value="Município:" for="municipio"/>
+						        <p:selectOneMenu id="municipio" value="#{cadastroUsuarioBean.pessoa.endereco.bairro.municipio}" required="true" requiredMessage="Município deve ser informado">
+						            <f:selectItem itemLabel="SELECIONE" />
+						            <f:selectItems value="#{cadastroUsuarioBean.listaMunicipios}" var="municipio" itemValue="#{municipio}" itemLabel="#{municipio.nome}" />
+						            <p:ajax listener="#{cadastroUsuarioBean.carregarBairros(cadastroUsuarioBean.pessoa.endereco.bairro.municipio)}" update="bairro" />
+						        </p:selectOneMenu>
+					        </div>
+					        <div class="campo">
+						        <p:outputLabel value="Bairro:" for="bairro"/>
+					    		<p:selectOneMenu id="bairro" value="#{cadastroUsuarioBean.pessoa.endereco.bairro}" required="true" requiredMessage="Bairro deve ser informado">
+						            <f:selectItem itemLabel="SELECIONE" />
+						            <f:selectItems value="#{cadastroUsuarioBean.listaBairros}" var="bairro" itemValue="#{bairro}" itemLabel="#{bairro.nome}" />
+						        </p:selectOneMenu>
+					        </div>
+					        <div class="campo">
+					    		<p:outputLabel value="Numero:" for="numero"/>
+					    		<p:inputMask id="numero" value="#{cadastroUsuarioBean.pessoa.endereco.numero}" mask="9?999" class="ui-size-1" />
+				    		</div>
+				    		<div class="campo">
+					    		<p:outputLabel value="CEP:" for="cep"/>
+					    		<p:inputMask id="cep" value="#{cadastroUsuarioBean.pessoa.endereco.cep}" mask="99999-999" class="ui-size-2" />
+				    		</div>
+				    		<div class="campo">
+					    		<p:outputLabel value="Logradouro:" for="logradouro"/>
+					    		<p:inputText id="logradouro" value="#{cadastroUsuarioBean.pessoa.endereco.logradouro}" class="ui-size-7" />
+				    		</div>
+				    		<div class="campo">
+					    		<p:outputLabel value="Complemento:" for="complemento"/>
+					    		<p:inputText id="complemento" value="#{cadastroUsuarioBean.pessoa.endereco.complemento}" class="ui-size-7" />
+				    		</div>
+			    		</p:fieldset>
+			    		<p:fieldset legend="Situação" class="formulario">
+				    		<div class="campo">
+					    		<p:outputLabel value="Grupo" for="grupo"/>
+						        <p:selectCheckboxMenu id="grupo" value="#{cadastroUsuarioBean.pessoa.usuario.grupos}" multiple="true" converter="grupoConverter" required="true" requiredMessage="Grupo deve ser informado">
+						        	<f:attribute name="collectionType" value="java.util.ArrayList" />
+						            <f:selectItems value="#{cadastroUsuarioBean.listaGrupos}" var="grupo" itemValue="#{grupo}" itemLabel="#{grupo.descricao}" />
+						        </p:selectCheckboxMenu>
+					        </div>
+					        <div class="campo">
+					    		<p:outputLabel value="Status do usuário:" rendered="#{cadastroUsuarioBean.pessoa.usuarioExistente}" />
+							    <h:outputText value="#{cadastroUsuarioBean.pessoa.usuario.status.descricao}" rendered="#{cadastroUsuarioBean.pessoa.usuarioExistente}" class="ui-size-4" />
+						    </div>
+					    </p:fieldset>
+				    </div>
+				    <div class="botoes">
+			    		<p:commandButton value="Salvar" action="#{cadastroUsuarioBean.salvar}" update="@form" />
+			    		<p:commandButton value="Resetar senha" action="#{edicaoPessoaBean.resetarSenhaUsuario}" process="@this" update="@form" disabled="#{cadastroUsuarioBean.pessoa.usuarioNaoExistente}" />
+			    		<p:commandButton value="#{cadastroUsuarioBean.pessoa.usuario.ativo ? 'Inativar' : 'Ativar'}" action="#{edicaoPessoaBean.alterarStatusUsuario}" process="@this" update="@form" disabled="#{cadastroUsuarioBean.pessoa.usuarioNaoExistente}" />
+			    		<p:button value="Voltar" outcome="/usuario/pesquisa" />
+		    		</div>
+	    		</div>
+	    	</h:form>
+    	</div>
+    </ui:define>
+</ui:composition>

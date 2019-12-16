@@ -1,0 +1,68 @@
+<ui:composition template="/WEB-INF/template/layout.xhtml" xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui" xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+    <ui:define name="titulo">Cláusula / Pesquisa</ui:define>
+   	<ui:define name="corpo">
+   		<div class="ui-g-12">
+	    	<h:form id="formPesquisa">
+		    	<p:messages closable="true">
+		    		<p:autoUpdate />
+		    	</p:messages>
+		    	<div class="card">
+		    		<h2>Pesquisa</h2>
+		    		<div class="formulario">
+		    			<div class="campo">
+				    		<p:outputLabel value="Id" for="id"/>
+				    		<p:inputText id="id" value="#{pesquisaClausulasBean.filtro.id}" class="ui-size-1" />
+			    		</div>
+			    		<div class="campo">
+				    		<p:outputLabel value="Tipo de cláusula:" for="tipo"/>
+				    		<p:selectOneMenu id="tipo" value="#{pesquisaClausulasBean.filtro.tipo}">
+					            <f:selectItem itemLabel="SELECIONE" />
+					            <f:selectItems value="#{pesquisaClausulasBean.tipos}" var="tipo" itemValue="#{tipo}" itemLabel="#{tipo.descricao}" />
+					        </p:selectOneMenu>
+				        </div>
+				        <div class="campo">
+				    		<p:outputLabel value="Número da cláusula:" for="numeroClausula"/>
+				    		<p:inputMask id="numeroClausula" value="#{pesquisaClausulasBean.filtro.numeroClausula}" mask="9?9" class="ui-size-3" />
+			    		</div>
+			    		<div class="campo">
+				    		<p:outputLabel value="Título" for="titulo"/>
+				    		<p:inputText id="titulo" value="#{pesquisaClausulasBean.filtro.titulo}" class="ui-size-7" />
+			    		</div>
+		    		</div>
+		    		<div class="botoes">
+		    			<p:commandButton value="Pesquisar" action="#{pesquisaClausulasBean.pesquisar}" update="@form" />
+		    			<p:button value="Incluir" outcome="/clausula/cadastro" />
+		    		</div>
+		    	</div>
+		    	<div class="card">
+			    	<p:dataTable id="tabelaClausulas" value="#{pesquisaClausulasBean.model}" var="clausula" lazy="true" rows="10" paginator="true" paginatorAlwaysVisible="false" paginatorPosition="bottom" rowsPerPageTemplate="10, 25, 50" emptyMessage="Nenhum registro encontrado.">
+			    		<p:column headerText="Id" class="ui-size-1">
+			    			<h:outputText value="#{clausula.id}" />
+			    		</p:column>
+			    		<p:column headerText="Tipo de cláusula">
+			    			<h:outputText value="#{clausula.tipo.descricao}" />
+			    		</p:column>
+			    		<p:column headerText="Número da cláusula" class="ui-size-4">
+			    			<h:outputText value="#{clausula.numeroClausula}" />
+			    		</p:column>
+			    		<p:column headerText="Título">
+			    			<h:outputText value="#{clausula.titulo}" />
+			    		</p:column>
+			    		<p:column class="ui-size-2">
+			    			<p:link class="fa fa-edit" outcome="/clausula/cadastro">
+			    				<f:param name="clausula" value="#{clausula.id}" />
+			    			</p:link>
+			    			<p:commandLink class="fa fa-trash" oncomplete="PF('confirmacaoExclusao').show()" process="@this" update="#{p:component('confirmacaoExclusaoDialog')}">
+			    				<f:setPropertyActionListener target="#{pesquisaClausulasBean.clausulaSelecionada}" value="#{clausula}" />
+			    			</p:commandLink>
+			    		</p:column>
+			    	</p:dataTable>
+			    	<p:confirmDialog id="confirmacaoExclusaoDialog" header="Exclusão de cláusula" message="Tem certeza que deseja excluir a cláusula #{pesquisaClausulasBean.clausulaSelecionada.id}?" widgetVar="confirmacaoExclusao">
+			    		<p:button value="Não" onclick="PF('confirmacaoExclusao').hide(); return false;" />
+			    		<p:commandButton id="yesButton" value="Sim" oncomplete="PF('confirmacaoExclusao').hide();" action="#{pesquisaClausulasBean.excluir}" process="@this" update="#{p:component('tabelaClausulas')}" />
+			    	</p:confirmDialog>
+		    	</div>
+	    	</h:form>
+    	</div>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,79 @@
+<ui:composition template="/WEB-INF/template/layout.xhtml" xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui" xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+    <ui:define name="titulo">Usuário / Pesquisa</ui:define>
+   	<ui:define name="corpo">
+   		<div class="ui-g-12">
+	    	<h:form id="formPesquisa">
+		    	<p:messages closable="true">
+		    		<p:autoUpdate />
+		    	</p:messages>
+		    	<div class="card">
+		    		<h2>Pesquisa</h2>
+		    		<div class="formulario">
+		    			<div class="campo">
+				    		<p:outputLabel value="Id" for="id"/>
+				    		<p:inputText id="id" value="#{pesquisaUsuariosBean.filtro.id}" class="ui-size-1" />
+			    		</div>
+			    		<div class="campo">
+				    		<p:outputLabel value="Tipo" for="tipo" />
+				    		<p:selectCheckboxMenu id="tipo" value="#{pesquisaUsuariosBean.filtro.tipos}" multiple="true" filter="true">
+					            <f:selectItems value="#{pesquisaUsuariosBean.tipos}" var="tipo" itemValue="#{tipo}" itemLabel="#{tipo.descricao}" />
+				    		</p:selectCheckboxMenu>
+			    		</div>
+			    		<div class="campo">
+				    		<p:outputLabel value="Status" for="status" />
+				    		<p:selectCheckboxMenu id="status" value="#{pesquisaUsuariosBean.filtro.statuses}" multiple="true" filter="true">
+					            <f:selectItems value="#{pesquisaUsuariosBean.statuses}" var="status" itemValue="#{status}" itemLabel="#{status.descricao}" />
+				    		</p:selectCheckboxMenu>
+			    		</div>
+			    		<div class="campo">
+				    		<p:outputLabel value="Nome" for="nome"/>
+				    		<p:inputText id="nome" value="#{pesquisaUsuariosBean.filtro.nome}" class="ui-size-7" />
+			    		</div>
+			    		<div class="campo">
+				    		<p:outputLabel value="CPF" for="cpf"/>
+				    		<p:inputMask id="cpf" value="#{pesquisaUsuariosBean.filtro.cpf}" mask="999.999.999-99" class="ui-size-3" />
+			    		</div>
+		    		</div>
+	    			<div class="botoes">
+	    				<p:commandButton value="Pesquisar" action="#{pesquisaUsuariosBean.pesquisar}" update="@form" />
+	    				<p:button value="Incluir" outcome="/usuario/cadastro" />
+	    			</div>
+		    	</div>
+		    	<div class="card">
+			    	<p:dataTable id="tabelaUsuarios" value="#{pesquisaUsuariosBean.model}" var="usuario" lazy="true" rows="10" paginator="true" paginatorAlwaysVisible="false" paginatorPosition="bottom" rowsPerPageTemplate="10, 25, 50" emptyMessage="Nenhum registro encontrado.">
+			    		<p:column class="ui-size-1">
+			    			<o:graphicImage value="#{usuario.foto}" dataURI="true" rendered="#{not empty usuario.foto}" />
+			    		</p:column>
+			    		<p:column headerText="Id" class="ui-size-1">
+			    			<h:outputText value="#{usuario.id}" />
+			    		</p:column>
+			    		<p:column headerText="Nome">
+			    			<h:outputText value="#{usuario.nome}" />
+			    		</p:column>
+			    		<p:column headerText="CPF" class="ui-size-3">
+			    			<h:outputText value="#{usuario.cpf}" />
+			    		</p:column>
+			    		<p:column headerText="Tipo" class="ui-size-3">
+			    			<h:outputText value="#{usuario.tipo.descricao}" />
+			    		</p:column>
+			    		<p:column headerText="Status de usuário" class="ui-size-3">
+			    			<h:outputText value="#{usuario.usuario.status.descricao}" />
+			    		</p:column>
+			    		<p:column class="ui-size-2">
+			    			<p:link class="fa fa-edit" outcome="/usuario/cadastro">
+			    				<f:param name="usuario" value="#{usuario.id}" />
+			    			</p:link>
+			    			<p:commandLink class="fa fa-trash" oncomplete="PF('confirmacaoExclusao').show()" process="@this" update="#{p:component('confirmacaoExclusaoDialog')}">
+			    				<f:setPropertyActionListener target="#{pesquisaUsuariosBean.pessoaSelecionada}" value="#{usuario}" />
+			    			</p:commandLink>
+			    		</p:column>
+			    	</p:dataTable>
+			    	<p:confirmDialog id="confirmacaoExclusaoDialog" header="Exclusão de usuário" message="Tem certeza que deseja excluir o usuário #{pesquisaUsuariosBean.pessoaSelecionada.nome}?" widgetVar="confirmacaoExclusao">
+			    		<p:button value="Não" onclick="PF('confirmacaoExclusao').hide(); return false;" />
+			    		<p:commandButton id="yesButton" value="Sim" oncomplete="PF('confirmacaoExclusao').hide();" action="#{pesquisaUsuariosBean.excluir}" process="@this" update="#{p:component('tabelaUsuarios')}" />
+			    	</p:confirmDialog>
+		    	</div>
+	    	</h:form>
+    	</div>
+    </ui:define>
+</ui:composition>

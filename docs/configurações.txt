@@ -1,0 +1,21 @@
+======================================================================================================
+Aumentar capacidade de transferencia de arquivos no MySQL
+
+Editar o arquivo C:\ProgramData\MySQL\MySQL Server 5.6\my.ini e alterar o valor max_allowed_packet=30M
+======================================================================================================
+https://www.iconsdb.com/
+
+use estagio;
+insert into pais (id, nome, sigla) values (1, 'Brasil', 'BRA');
+insert into estado (id, nome, uf, pais_id) values (1, 'Espírito Santo', 'ES', 1);
+insert into municipio (id, nome, estado_id) values (1, 'Serra', 1);
+insert into bairro (id, nome, municipio_id) values (1, 'Nova Carapina II', 1);
+insert into endereco (id, cep, complemento, logradouro, numero, bairro_id) values (1, '29.170-166', 'casa', 'Rua Lajinha', 50, 1);
+insert into contato (id, telefone, email) values (1, '(27) 3239-1949', 'atilaslamberti@vilavelha.es.gov.br');
+insert into empresa (id, cnpj, razao_social, nome_fantasia) values (1, '27.165.554/0001-03', 'Prefeitura Municipal de Vila Velha', 'PMVV');
+insert into grupo (id, descricao, nome) values (1, 'Administradores', 'ADMINISTRADORES');
+insert into grupo (id, descricao, nome) values (2, 'Atendentes', 'ATENDENTES');
+insert into grupo (id, descricao, nome) values (3, 'Alunos', 'ALUNOS');
+insert into usuario (id, senha, status) values (1, '$2a$10$yGkCZDothV8GIhpLfamFJOcGzfDg3Vsrv81JNJ1cZzJmTUIzSfjUi', 0);
+insert into usuario_grupo (usuario_id, grupo_id) values (1, 1);
+insert into pessoa (id, tipo, nome, cpf, contato_id, endereco_id, usuario_id) values (1, 1, 'Atilas Rodrigues Lamberti', '110.169.877-22', 1, 1, 1);

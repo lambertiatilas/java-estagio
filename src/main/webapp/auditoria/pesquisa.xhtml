@@ -1,0 +1,101 @@
+<ui:composition template="/WEB-INF/template/layout.xhtml" xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui" xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+    <ui:define name="titulo">Auditoria / Pesquisa</ui:define>
+   	<ui:define name="corpo">
+   		<div class="ui-g-12">
+	    	<h:form id="formPesquisa">
+		    	<p:messages closable="true">
+		    		<p:autoUpdate />
+		    	</p:messages>
+		    	<div class="card">
+		    		<h2>Pesquisa</h2>
+		    		<div class="formulario">
+		    			<div class="campo">
+				    		<p:outputLabel value="Id" for="id"/>
+				    		<p:inputText id="id" value="#{pesquisaAuditoriasBean.filtro.id}" class="ui-size-1" />
+			    		</div>
+			    		<div class="campo">
+				    		<p:outputLabel value="Nome da tabela:" for="tabelaNome"/>
+				    		<p:selectOneMenu id="tabelaNome" value="#{pesquisaAuditoriasBean.filtro.tabelaNome}">
+					            <f:selectItem itemLabel="SELECIONE" />
+					            <f:selectItems value="#{pesquisaAuditoriasBean.tabelas}" var="tabelaNome" itemValue="#{tabelaNome}" itemLabel="#{tabelaNome.descricao}" />
+					        </p:selectOneMenu>
+				        </div>
+				        <div class="campo">
+					        <p:outputLabel value="ID da tabela" for="tabelaId"/>
+				    		<p:inputText id="tabelaId" value="#{pesquisaAuditoriasBean.filtro.tabelaId}" class="ui-size-1" />
+			    		</div>
+			    		<div class="campo">
+					        <p:outputLabel value="Ação:" for="acao"/>
+				    		<p:selectOneMenu id="acao" value="#{pesquisaAuditoriasBean.filtro.acao}">
+					            <f:selectItem itemLabel="SELECIONE" />
+					            <f:selectItems value="#{pesquisaAuditoriasBean.acoes}" var="acao" itemValue="#{acao}" itemLabel="#{acao.descricao}" />
+					        </p:selectOneMenu>
+				        </div>
+				        <div class="campo">
+					        <p:outputLabel value="Data da criação:" />
+							<h:panelGroup>
+								<p:calendar pattern="dd/MM/yyyy" mask="true" value="#{pesquisaAuditoriasBean.filtro.dataCriacaoDe}" class="ui-size-2" />
+								<h:outputText value=" a " />
+								<p:calendar pattern="dd/MM/yyyy" mask="true" value="#{pesquisaAuditoriasBean.filtro.dataCriacaoAte}" class="ui-size-2" />
+							</h:panelGroup>
+						</div>
+				 		<div class="campo">
+							<p:outputLabel value="Criado por (Nome):" for="criadoPor"/>
+				    		<p:inputText id="criadoPor" value="#{pesquisaAuditoriasBean.filtro.criadoPor}" class="ui-size-7" />
+			    		</div>
+			    		<div class="campo">
+							<p:outputLabel value="Data de modificação:" />
+							<h:panelGroup>
+								<p:calendar pattern="dd/MM/yyyy" mask="true" value="#{pesquisaAuditoriasBean.filtro.dataModificacaoDe}" class="ui-size-2" />
+								<h:outputText value=" a " />
+								<p:calendar pattern="dd/MM/yyyy" mask="true" value="#{pesquisaAuditoriasBean.filtro.dataModificacaoAte}" class="ui-size-2" />
+							</h:panelGroup>
+						</div>
+						<div class="campo">
+				    		<p:outputLabel value="Modificado por (Nome):" for="modificadoPor"/>
+				    		<p:inputText id="modificadoPor" value="#{pesquisaAuditoriasBean.filtro.modificadoPor}" class="ui-size-7" />
+			    		</div>
+			    	</div>
+			    	<div class="botoes">
+			    		<p:commandButton value="Pesquisar" action="#{pesquisaAuditoriasBean.pesquisar}" update="@form" />
+			    	</div>
+		    	</div>
+		    	<div class="card">
+			    	<p:dataTable id="tabelaAuditorias" value="#{pesquisaAuditoriasBean.model}" var="auditoria" lazy="true" rows="10" paginator="true" paginatorAlwaysVisible="false" paginatorPosition="bottom" rowsPerPageTemplate="10, 25, 50" emptyMessage="Nenhum registro encontrado.">
+			    		<p:column headerText="Id" class="ui-size-1">
+			    			<h:outputText value="#{auditoria.id}" />
+			    		</p:column>
+			    		<p:column headerText="Nome da tabela">
+			    			<h:outputText value="#{auditoria.tabelaNome.descricao}" />
+			    		</p:column>
+			    		<p:column headerText="ID da tabela" class="ui-size-1">
+			    			<h:outputText value="#{auditoria.tabelaId}" />
+			    		</p:column>
+			    		<p:column headerText="Ação" class="ui-size-2">
+			    			<h:outputText value="#{auditoria.acao.descricao}" />
+			    		</p:column>
+			    		<p:column headerText="Data da criação" class="ui-size-4">
+							<h:outputText value="#{auditoria.dataCriacao}">
+								<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+							</h:outputText>
+						</p:column>
+						<p:column headerText="Criado por">
+			    			<h:outputText value="#{auditoria.criadoPor.cpf} - #{auditoria.criadoPor.nome}" />
+			    		</p:column>
+						<p:column headerText="Data de modificação" class="ui-size-4">
+							<h:outputText value="#{auditoria.dataModificacao}">
+								<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+							</h:outputText>
+						</p:column>
+			    		<p:column headerText="Modificado por">
+			    			<h:outputText value="#{auditoria.modificadoPor.cpf} - #{auditoria.modificadoPor.nome}" />
+			    		</p:column>
+			    		<p:column headerText="Quantidade salva" class="ui-size-1">
+			    			<h:outputText value="#{auditoria.quantidadeSalva}" />
+			    		</p:column>
+			    	</p:dataTable>
+		    	</div>
+	    	</h:form>
+    	</div>
+    </ui:define>
+</ui:composition>
